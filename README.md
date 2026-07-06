@@ -1,33 +1,32 @@
 # Tool Error Summarizer
 
-Summarize automation tool error logs into retry, auth, timeout, and schema findings. I keep it small because this kind of check is most useful when it can run beside the work, not after the work has already shipped.
+Tool Error Summarizer is meant for quick pull-request checks around tooling reviews. It favors explicit rules over a bulky dashboard.
 
-## Project card
+![Tool Error Summarizer cover](assets/readme-cover.svg)
 
-<img src="assets/readme-cover.svg" alt="Tool Error Summarizer cover" width="100%" />
+## Rule ledger
 
-| Detail | Value |
-| --- | --- |
-| Area | developer tools |
-| Command | `tool-error-summarizer` |
-| Example | `examples/sample.txt` |
+- `auth-denied` - authorization failure detected (high); Check scopes, credentials, and tenant access..
+- `timeout` - timeout failure detected (medium); Review retries, latency budget, and upstream health..
+- `schema-mismatch` - schema validation failure detected (low); Update tool schema or argument generation..
 
-## What would make me stop a review
+## Finding map
 
-| Stopper | Level | Why it matters |
-| --- | --- | --- |
-| `auth-denied` | high | authorization failure detected |
-| `timeout` | medium | timeout failure detected |
-| `schema-mismatch` | low | schema validation failure detected |
+![Workflow diagram](assets/readme-diagram.svg)
 
-## Run from a fresh clone
+## Command path
 
 ```bash
 git clone https://github.com/mertefekurt/tool-error-summarizer.git
 cd tool-error-summarizer
-python -m venv .venv
-source .venv/bin/activate
 python -m pip install -e ".[dev]"
 tool-error-summarizer examples/sample.txt
-tool-error-summarizer examples/sample.txt --json
+```
+
+## Maintenance rhythm
+
+```bash
+ruff check .
+pytest
+python -m tool_error_summarizer --help
 ```
