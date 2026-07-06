@@ -1,16 +1,27 @@
-# tool-error-summarizer
+<img src="assets/readme-cover.svg" alt="Tool Error Summarizer cover" width="100%" />
 
-**Data Sheet.** Summarize automation tool error logs into retry, auth, timeout, and schema findings.
+# Tool Error Summarizer
 
-## Inputs
+Summarize automation tool error logs into retry, auth, timeout, and schema findings.
 
-Tool-call failures are noisy. This CLI converts raw error snippets into a compact operational report.
+![stack](https://img.shields.io/badge/stack-Python-be185d?style=flat-square) ![python](https://img.shields.io/badge/python-3.11-4b5563?style=flat-square) ![license](https://img.shields.io/badge/license-MIT-2563eb?style=flat-square) ![ci](https://img.shields.io/badge/ci-GitHub%20Actions-16a34a?style=flat-square)
 
-## Processing
+## Workflow
 
-`tool-error-summarizer` accepts tool error logs or JSONL traces in text, JSON, JSONL, or CSV form.
+1. Collect the review notes or exported records.
+2. Run `tool-error-summarizer` against the file.
+3. Read the findings in Markdown, or switch to JSON for automation.
+4. Fail CI only at the severity level you care about.
 
-## Outputs
+## Checks
+
+| Rule | Severity | What it catches |
+| --- | --- | --- |
+| `auth-denied` | high | authorization failure detected |
+| `timeout` | medium | timeout failure detected |
+| `schema-mismatch` | low | schema validation failure detected |
+
+## Command line
 
 ```bash
 python -m pip install -e ".[dev]"
@@ -18,30 +29,19 @@ tool-error-summarizer examples/sample.txt
 tool-error-summarizer examples/sample.txt --json --fail-on medium
 ```
 
-## Failure Modes
-
-| Rule | Severity | Meaning |
-|---|---:|---|
-| `auth-denied` | high | authorization failure detected |
-| `timeout` | medium | timeout failure detected |
-| `schema-mismatch` | low | schema validation failure detected |
-
-## Verification
-
-```bash
-ruff check .
-pytest
-python -m tool_error_summarizer --help
-```
-
-License: MIT
-
-### Example Input
+## Sample risky input
 
 ```text
 tool fetch failed timeout retry exhausted auth denied schema mismatch
 ```
 
-### Architecture
+## Project shape
 
-`cli.py` reads files, `core.py` evaluates records, and `rules.py` keeps the tool-error-summarizer policy surface explicit.
+```text
+.github/        CI workflow
+examples/       sample inputs
+src/            package source
+tests/          test coverage
+.gitignore      project file
+pyproject.toml  package metadata
+```
